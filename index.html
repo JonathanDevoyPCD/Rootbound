@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#4ca7e2" />
-    <meta name="description" content="Rootbound is a tiny living tree that grows with your time." />
+    <meta name="theme-color" content="#5cb6eb" />
+    <meta name="description" content="Rootbound is a small living tree that grows with your time." />
     <title>Rootbound — A Living Tree</title>
     <link rel="icon" href="data:," />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,82 +14,85 @@
   </head>
   <body>
     <main class="game-shell">
-      <canvas id="worldCanvas" width="384" height="216" aria-label="A pixel-art tree in a changing meadow"></canvas>
-      <div class="world-wash" aria-hidden="true"></div>
+      <canvas id="worldCanvas" aria-label="A living tree in a painterly pixel meadow"></canvas>
+      <div class="world-light" aria-hidden="true"></div>
 
       <div class="hud-layer">
-        <header class="top-hud">
-          <div class="brand-lockup">
-            <span class="brand-kicker">a small life, kept in time</span>
-            <h1>ROOTBOUND</h1>
+        <header class="minimal-header">
+          <div class="tree-identity">
+            <button id="detailsButton" class="brand-button" type="button" aria-expanded="false" aria-controls="detailsDrawer">
+              <span class="brand-mark" aria-hidden="true"></span>
+              <span>ROOTBOUND</span>
+            </button>
+            <div class="stage-line"><strong id="stageName">A tiny sprout</strong><span id="stageNumber">Stage 1</span></div>
+            <div class="growth-line" aria-label="Progress to the next stage"><span id="growthBar"></span></div>
           </div>
-          <div class="world-readout" aria-label="World status">
-            <span id="seasonBadge" class="season-badge">SPRING</span>
-            <span id="clockLabel">--:--</span>
+
+          <div class="sky-status" aria-label="Local time and weather">
+            <div><span id="seasonBadge">SPRING</span><span class="status-dot">·</span><span id="clockLabel">--:--</span></div>
             <span id="weatherLabel">Reading the sky…</span>
-          </div>
-          <div class="top-actions">
-            <button id="detailsButton" class="hud-button" type="button" aria-expanded="false" aria-controls="detailsDrawer">Journal</button>
-            <button id="focusButton" class="hud-button" type="button">Focus</button>
           </div>
         </header>
 
-        <div class="world-caption" aria-live="polite">
-          <span id="worldMessage">The soil remembers your hands.</span>
-          <span id="weatherDetail">Port Elizabeth · local sky</span>
-        </div>
+        <div id="worldMessage" class="world-message" aria-live="polite">The soil remembers your hands.</div>
 
-        <section class="bottom-hud" aria-label="Tree controls">
-          <div class="growth-readout">
-            <div class="readout-kicker">Current growth</div>
-            <div class="growth-title"><strong id="stageName">A tiny sprout</strong><span id="stageNumber">Stage 1</span></div>
-            <div class="growth-bar"><span id="growthBar"></span></div>
-            <div class="readout-meta"><span id="growthText">0 / 20 growth</span><span id="nextStageText">Soon</span></div>
-          </div>
-
-          <div class="care-controls">
-            <div class="readout-kicker">Tend to it</div>
-            <div class="care-actions">
-              <button class="care-button" data-action="encourage" type="button"><strong>Encourage</strong><span class="cooldown" data-cooldown="encourage">READY</span></button>
-              <button class="care-button" data-action="water" type="button"><strong>Water</strong><span class="cooldown" data-cooldown="water">READY</span></button>
-              <button class="care-button" data-action="fertilize" type="button"><strong>Fertilise</strong><span class="cooldown" data-cooldown="fertilize">READY</span></button>
-            </div>
-          </div>
-
-          <div class="condition-readout">
-            <div class="readout-kicker">Condition</div>
-            <div class="condition-line"><span>Moisture</span><strong id="moistureValue">70%</strong></div>
-            <div class="moisture-bar"><span id="moistureBar"></span></div>
-            <div class="readout-meta"><span id="growthRate">Growing gently</span><span id="offlineNote">Day is open</span></div>
-          </div>
-
-          <div class="resource-readout" aria-label="Collected resources">
-            <span><i class="resource-mark leaf-mark"></i><b id="leavesValue">0</b> leaves</span>
-            <span><i class="resource-mark seed-mark"></i><b id="seedsValue">0</b> seeds</span>
-            <span><i class="resource-mark dew-mark"></i><b id="dewValue">3</b> dew</span>
-            <span><i class="resource-mark compost-mark"></i><b id="compostValue">1</b> compost</span>
-          </div>
+        <section class="care-dock" aria-label="Care for your tree">
+          <button class="care-button" data-action="encourage" type="button">
+            <span class="care-icon tend-icon" aria-hidden="true"></span>
+            <span class="care-copy"><strong>Tend</strong><small class="cooldown" data-cooldown="encourage">READY</small></span>
+          </button>
+          <button class="care-button" data-action="water" type="button">
+            <span class="care-icon water-icon" aria-hidden="true"></span>
+            <span class="care-copy"><strong>Water</strong><small class="cooldown" data-cooldown="water">READY</small></span>
+          </button>
+          <button class="care-button" data-action="fertilize" type="button">
+            <span class="care-icon feed-icon" aria-hidden="true"></span>
+            <span class="care-copy"><strong>Feed</strong><small class="cooldown" data-cooldown="fertilize">READY</small></span>
+          </button>
         </section>
       </div>
 
-      <aside id="detailsDrawer" class="details-drawer" aria-label="Tree journal and upgrades" hidden>
+      <aside id="detailsDrawer" class="details-drawer" aria-label="Tree details" hidden>
         <div class="drawer-header">
-          <div><span class="readout-kicker">The quiet record</span><h2>Journal & growth</h2></div>
-          <button id="closeDetailsButton" class="close-button" type="button" aria-label="Close journal">×</button>
+          <div><span class="eyebrow">Your living tree</span><h2>Rootbound</h2></div>
+          <button id="closeDetailsButton" class="close-button" type="button" aria-label="Close menu">×</button>
         </div>
-        <p id="actionHint" class="drawer-note">Click the tree or encourage it below.</p>
+
+        <section class="tree-summary">
+          <div class="summary-heading"><strong id="drawerStageName">A tiny sprout</strong><span id="drawerStageNumber">Stage 1</span></div>
+          <div class="drawer-progress"><span id="drawerGrowthBar"></span></div>
+          <div class="summary-meta"><span id="growthText">0 / 20 growth</span><span id="nextStageText">Soon</span></div>
+        </section>
+
+        <section class="drawer-section condition-grid">
+          <div><span class="eyebrow">Moisture</span><strong id="moistureValue">70%</strong><div class="moisture-bar"><span id="moistureBar"></span></div></div>
+          <div><span class="eyebrow">Pace</span><strong id="growthRate">Growing gently</strong><small id="offlineNote">Day is open</small></div>
+        </section>
+
         <section class="drawer-section">
-          <div class="drawer-section-heading"><span class="readout-kicker">Endless tech tree</span><span id="techLevel" class="drawer-count">0 upgrades</span></div>
-          <p class="drawer-note">Every upgrade leaves a visible trace.</p>
+          <div class="resource-grid" aria-label="Collected resources">
+            <span><b id="leavesValue">0</b><small>Leaves</small></span>
+            <span><b id="seedsValue">0</b><small>Seeds</small></span>
+            <span><b id="dewValue">3</b><small>Dew</small></span>
+            <span><b id="compostValue">1</b><small>Compost</small></span>
+          </div>
+        </section>
+
+        <section class="drawer-section">
+          <div class="section-heading"><span class="eyebrow">Endless growth</span><span id="techLevel" class="section-count">0 upgrades</span></div>
           <div id="upgradeList" class="upgrade-list"></div>
         </section>
+
         <section class="drawer-section">
-          <div class="drawer-section-heading"><span class="readout-kicker">Field journal</span><span id="journalCount" class="drawer-count">1 found</span></div>
+          <div class="section-heading"><span class="eyebrow">Field journal</span><span id="journalCount" class="section-count">1 found</span></div>
+          <p id="actionHint" class="drawer-note">Click the tree or tend to it below.</p>
           <div id="journalList" class="journal-list"></div>
         </section>
+
         <footer class="drawer-footer">
-          <label><input id="liveWeatherToggle" type="checkbox" checked /> Live Port Elizabeth weather</label>
+          <div><span id="weatherDetail">Port Elizabeth · local sky</span><label><input id="liveWeatherToggle" type="checkbox" checked /> Live weather</label></div>
           <button id="resetButton" class="text-button" type="button">Reset tree</button>
+          <span id="saveStatus" class="save-status">Your tree is safe</span>
         </footer>
       </aside>
     </main>
