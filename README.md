@@ -25,3 +25,5 @@ The game also works from `index.html` directly, but it will use its seasonal wea
 - Live Port Elizabeth weather through Open-Meteo when served over HTTP(S)
 
 The artwork in `StyleReferences` and the CraftPix ZIP are reference material only; they are not used by the game until their licences are confirmed.
+
+The visual source of truth for future environment work is [`Rootbound-Style-Guide/design.md`](Rootbound-Style-Guide/design.md).

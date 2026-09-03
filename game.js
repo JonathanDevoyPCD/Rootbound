@@ -80,6 +80,7 @@ function saveState() {
   state.lastUpdated = Date.now();
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
   const status = document.querySelector("#saveStatus");
+  if (!status) return;
   status.textContent = "Saved locally";
   window.setTimeout(() => { status.textContent = "Your tree is safe"; }, 1400);
 }
@@ -191,17 +192,15 @@ function drawLeafBlob(x, y, width, height, colours, phase = 0) {
   const sway = Math.round(Math.sin(performance.now() / 2100 + phase) * 1.25);
   const left = x - width / 2 + sway;
   const top = y - height / 2;
-  ctx.fillStyle = colours.outline;
-  ctx.fillRect(left + width * 0.18, top, width * 0.62, 4);
-  ctx.fillRect(left + width * 0.06, top + 4, width * 0.86, height - 10);
-  ctx.fillRect(left + width * 0.18, top + height - 7, width * 0.62, 7);
   ctx.fillStyle = colours.shadow;
-  ctx.fillRect(left + width * 0.1, top + height * 0.48, width * 0.8, height * 0.37);
+  ctx.fillRect(left + width * 0.08, top + height * 0.35, width * 0.84, height * 0.48);
+  ctx.fillRect(left + width * 0.2, top + height * 0.2, width * 0.6, height * 0.6);
   ctx.fillStyle = colours.base;
-  ctx.fillRect(left + width * 0.18, top + 5, width * 0.66, height * 0.43);
+  ctx.fillRect(left + width * 0.16, top + 4, width * 0.68, height * 0.52);
+  ctx.fillRect(left + width * 0.28, top, width * 0.42, 6);
   ctx.fillStyle = colours.highlight;
-  ctx.fillRect(left + width * 0.29, top + 7, width * 0.22, 5);
-  ctx.fillRect(left + width * 0.53, top + 14, width * 0.16, 4);
+  ctx.fillRect(left + width * 0.26, top + 7, width * 0.22, Math.max(4, height * 0.18));
+  ctx.fillRect(left + width * 0.53, top + 14, width * 0.16, Math.max(4, height * 0.13));
 }
 
 function drawTree() {
@@ -215,7 +214,7 @@ function drawTree() {
   const palette = leafPalettes[season];
   const stage = state.stage;
   const groundY = 190;
-  const height = Math.min(148, 36 + stage * 12);
+  const height = Math.min(164, 64 + stage * 12);
   const top = groundY - height;
   ctx.fillStyle = isNight() ? "#102b34" : season === "autumn" ? "#c8845e" : season === "winter" ? "#7898aa" : "#77bdc5";
   ctx.fillRect(0, 0, W, H);
@@ -248,7 +247,7 @@ function drawTree() {
   if (season === "winter" && stage >= 4) {
     ctx.fillStyle = palette.outline; ctx.fillRect(185, top + 12, 5, 45); ctx.fillRect(177, top + 24, 5, 25); ctx.fillRect(205, top + 17, 5, 28);
   } else if (stage >= 1) {
-    const blobs = stage < 3 ? [[190, top + 10, 45, 27, 0]] : stage < 5 ? [[173, top + 24, 50, 30, 0], [211, top + 29, 42, 28, 2], [190, top + 8, 38, 26, 1]] : [[161, top + 30, 53, 32, 0], [221, top + 34, 52, 32, 2], [190, top + 7, 66, 41, 1], [183, top + 49, 58, 27, 3]];
+    const blobs = stage < 3 ? [[190, top + 11, 42, 25, 0], [180, top + 18, 22, 17, 2], [202, top + 19, 23, 16, 1]] : stage < 5 ? [[173, top + 24, 50, 30, 0], [211, top + 29, 42, 28, 2], [190, top + 8, 38, 26, 1]] : [[161, top + 30, 53, 32, 0], [221, top + 34, 52, 32, 2], [190, top + 7, 66, 41, 1], [183, top + 49, 58, 27, 3]];
     blobs.forEach(([x, y, width, blobHeight, phase]) => drawLeafBlob(x, y, width, blobHeight, palette, phase));
     if (stage >= 6 && season !== "winter") { ctx.fillStyle = season === "autumn" ? "#7d3e2d" : "#d84f58"; [[177, top + 23], [211, top + 38], [195, top + 57]].forEach(([x, y]) => ctx.fillRect(x, y, 4, 4)); }
   }
@@ -330,7 +329,9 @@ function wireEvents() {
   document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => performAction(button.dataset.action)));
   canvas.addEventListener("click", () => performAction("encourage"));
   document.querySelector("#upgradeList").addEventListener("click", (event) => { const button = event.target.closest("[data-upgrade]"); if (button) buyUpgrade(button.dataset.upgrade); });
-  document.querySelector("#focusButton").addEventListener("click", () => { focusMode = !focusMode; document.body.classList.toggle("focus-mode", focusMode); document.querySelector("#focusButton").textContent = focusMode ? "Exit focus" : "Focus mode"; });
+  document.querySelector("#focusButton").addEventListener("click", () => { focusMode = !focusMode; document.body.classList.toggle("focus-mode", focusMode); document.querySelector("#focusButton").textContent = focusMode ? "Exit" : "Focus"; });
+  document.querySelector("#detailsButton").addEventListener("click", () => { const drawer = document.querySelector("#detailsDrawer"); const open = drawer.hasAttribute("hidden"); if (open) drawer.removeAttribute("hidden"); else drawer.setAttribute("hidden", ""); document.querySelector("#detailsButton").setAttribute("aria-expanded", String(open)); });
+  document.querySelector("#closeDetailsButton").addEventListener("click", () => { document.querySelector("#detailsDrawer").setAttribute("hidden", ""); document.querySelector("#detailsButton").setAttribute("aria-expanded", "false"); });
   document.querySelector("#liveWeatherToggle").addEventListener("change", (event) => { state.liveWeather = event.target.checked; notice = state.liveWeather ? "The local sky is listening." : "The sky will follow the season."; saveState(); if (state.liveWeather) fetchWeather(); renderUI(); });
   document.querySelector("#resetButton").addEventListener("click", () => { if (window.confirm("Start again with a new seed? This removes the local tree save.")) { state = freshState(); saveState(); notice = "A new beginning."; renderUI(); } });
   window.addEventListener("beforeunload", saveState);
